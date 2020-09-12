@@ -1,0 +1,37 @@
+ Resources:
+
+  # Buckets
+  clientBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.clientBucket}  
+
+  # DynamoDB best practices suggest most applications should only
+  # have a single table. For resources check out the follow links...
+  # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html
+  # Advanced Design Patterns for DynamoDB - https://www.youtube.com/watch?v=HaEPXoXVf2k
+  ApplicationDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: reverse
+          KeySchema:
+            - AttributeName: sk
+              KeyType: HASH
+            - AttributeName: pk
+              KeyType: RANGE
+          Projection:
+              ProjectionType: ALL

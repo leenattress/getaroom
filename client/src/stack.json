@@ -1,0 +1,9 @@
+{
+  "ConnectionManagerLambdaFunctionQualifiedArn": "arn:aws:lambda:eu-west-1:865934940415:function:getaroom-dev-dev-connectionManager:1",
+  "SendMessageLambdaFunctionQualifiedArn": "arn:aws:lambda:eu-west-1:865934940415:function:getaroom-dev-dev-sendMessage:1",
+  "DefaultMessagesLambdaFunctionQualifiedArn": "arn:aws:lambda:eu-west-1:865934940415:function:getaroom-dev-dev-defaultMessages:1",
+  "BroadcastLambdaFunctionQualifiedArn": "arn:aws:lambda:eu-west-1:865934940415:function:getaroom-dev-dev-broadcast:1",
+  "ServiceEndpointWebsocket": "wss://r1texw3wgg.execute-api.eu-west-1.amazonaws.com/dev",
+  "ServerlessDeploymentBucketName": "getaroom-dev-dev-serverlessdeploymentbucket-c23a8nr1gakw",
+  "ChannelManagerLambdaFunctionQualifiedArn": "arn:aws:lambda:eu-west-1:865934940415:function:getaroom-dev-dev-channelManager:1"
+}

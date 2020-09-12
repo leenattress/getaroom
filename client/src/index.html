@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="/build/getaroom-client.esm.js"></script>
+    <script nomodule src="/build/getaroom-client.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans&display=swap" rel="stylesheet" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--vedit-color-gray-150);
+      }
+      * {
+        font-family: 'PT Sans', sans-serif;
+      }
+      #harness-container {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component> -->
+    <div id="chat-container"></div>
+
+    <script>
+      function loadJSON(callback) {
+        var xobj = new XMLHttpRequest();
+        xobj.overrideMimeType('application/json');
+        xobj.open('GET', 'stack.json', true); // Replace 'my_data' with the path to your file
+        xobj.onreadystatechange = function() {
+          if (xobj.readyState == 4 && xobj.status == '200') {
+            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            callback(xobj.responseText);
+          }
+        };
+        xobj.send(null);
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        loadJSON(function(response) {
+
+          // response from stack json
+          var stack = JSON.parse(response);
+
+          // make a socket connection
+          const socket = new WebSocket(stack.ServiceEndpointWebsocket);
+          socket.onopen = function(event) {
+            console.log(`Connection established`);
+          };
+          socket.onclose = function(event) {
+            console.log(`Connection closed`);
+          };
+          socket.onmessage = function(e) {
+            var message = JSON.parse(e.data);
+            console.log(message);
+            if (message.event === 'channel_message') {
+              $events.appendChild(newItem(message.name + ' says: ' + message.content));
+            }
+
+            if (message.event === 'subscriber_sub') {
+              console.log(message);
+            }
+
+            if (message.event === 'subscriber_unsub') {
+              console.log(message);
+            }
+          };
+
+          // attach out chat client to the document
+          var chatClient = document.createElement('chat-client');
+          chatClient.socketServer = stack.ServiceEndpoint;
+          chatClient.username = 'JohnDoe';
+          document.getElementById('chat-container').appendChild(chatClient);
+        });
+      });
+    </script>
+  </body>
+</html>
