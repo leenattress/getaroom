@@ -1,0 +1,14 @@
+{
+  "entries": [
+    "./components/chat-client/chat-client.js",
+    "./components/chat-conversation/chat-conversation.js",
+    "./components/chat-message/chat-message.js"
+  ],
+  "compiler": {
+    "name": "@stencil/core",
+    "version": "2.0.3",
+    "typescriptVersion": "4.0.2"
+  },
+  "collections": [],
+  "bundles": []
+}

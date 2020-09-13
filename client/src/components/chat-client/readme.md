@@ -9,9 +9,9 @@
 
 | Property       | Attribute       | Description | Type     | Default     |
 | -------------- | --------------- | ----------- | -------- | ----------- |
-| `channel`      | `channel`       |             | `string` | `'General'` |
+| `channel`      | `channel`       |             | `string` | `undefined` |
 | `socketServer` | `socket-server` |             | `string` | `undefined` |
-| `username`     | `username`      |             | `string` | `'johndoe'` |
+| `username`     | `username`      |             | `string` | `undefined` |
 
 
 ## Events
@@ -19,6 +19,19 @@
 | Event              | Description | Type               |
 | ------------------ | ----------- | ------------------ |
 | `messageSendEvent` |             | `CustomEvent<any>` |
+
+
+## Methods
+
+### `init(config: ChatConfig) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 
 ## Dependencies

@@ -33,12 +33,12 @@ provider:
     API_REGION: "${self:provider.region}" 
 
   # optional
-  websocketApiName: websocket-chat-${self:service}
+  websocketsApiName: websocket-chat-${self:service}
 
   # required for websocket apis
   # this selects from your payload what your "route" parameter is
   # from the websocket event types on your function
-  websocketApiRouteSelectionExpression: $request.body.action
+  websocketsApiRouteSelectionExpression: $request.body.action
 
 
 
@@ -65,6 +65,7 @@ custom:
     bucketName: ${self:custom.clientBucket}
     indexDocument: index.html
     errorDocument: error.html
+    distributionFolder: client/deploy
 
 # CloudFormation resource templates here
 resources:
@@ -94,6 +95,13 @@ functions:
     events:
       - websocket:
           route: sendMessage
+
+  # load chat history
+  # loadHistory:
+  #   handler: src/handler.loadHistory
+  #   events:
+  #     - websocket:
+  #         route: loadHistory          
 
   # Channel Subscriptions
   channelManager:

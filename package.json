@@ -4,7 +4,7 @@
   "description": "",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prep": "cp -R client/dist client/deploy/build && cp client/src/index_deploy.html client/deploy/index.html && cp client/src/stack.json client/deploy/stack.json"
   },
   "author": "",
   "license": "ISC",

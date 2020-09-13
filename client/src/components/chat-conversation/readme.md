@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property       | Attribute | Description | Type        | Default |
-| -------------- | --------- | ----------- | ----------- | ------- |
-| `chatmessages` | --        |             | `Message[]` | `[]`    |
+| Property       | Attribute | Description | Type        | Default     |
+| -------------- | --------- | ----------- | ----------- | ----------- |
+| `chatmessages` | --        |             | `Message[]` | `undefined` |
 
 
 ## Dependencies

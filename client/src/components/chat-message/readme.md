@@ -7,9 +7,9 @@
 
 ## Events
 
-| Event              | Description | Type               |
-| ------------------ | ----------- | ------------------ |
-| `messageSendEvent` |             | `CustomEvent<any>` |
+| Event          | Description | Type               |
+| -------------- | ----------- | ------------------ |
+| `messageEvent` |             | `CustomEvent<any>` |
 
 
 ## Dependencies

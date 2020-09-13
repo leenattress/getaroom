@@ -189,7 +189,8 @@ async function broadcast(event, context) {
 //   // only allow first page of history, otherwise this could blow up a table fast
 //   // pagination would be interesting to implement as an exercise!
 //   return await db.Client.query({
-//     TableName: db.Table
+//     TableName: db.Table,
+//     Limit: 20,
 //   }).promise();
 // };
 
