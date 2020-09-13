@@ -5,8 +5,18 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ChatConfig, Message } from "./interfaces/chat.interface";
 export namespace Components {
     interface ChatClient {
+        "channel": string;
+        "init": (config: ChatConfig) => Promise<void>;
+        "socketServer": string;
+        "username": string;
+    }
+    interface ChatConversation {
+        "chatmessages": Message[];
+    }
+    interface ChatMessage {
     }
 }
 declare global {
@@ -16,15 +26,41 @@ declare global {
         prototype: HTMLChatClientElement;
         new (): HTMLChatClientElement;
     };
+    interface HTMLChatConversationElement extends Components.ChatConversation, HTMLStencilElement {
+    }
+    var HTMLChatConversationElement: {
+        prototype: HTMLChatConversationElement;
+        new (): HTMLChatConversationElement;
+    };
+    interface HTMLChatMessageElement extends Components.ChatMessage, HTMLStencilElement {
+    }
+    var HTMLChatMessageElement: {
+        prototype: HTMLChatMessageElement;
+        new (): HTMLChatMessageElement;
+    };
     interface HTMLElementTagNameMap {
         "chat-client": HTMLChatClientElement;
+        "chat-conversation": HTMLChatConversationElement;
+        "chat-message": HTMLChatMessageElement;
     }
 }
 declare namespace LocalJSX {
     interface ChatClient {
+        "channel"?: string;
+        "onMessageSendEvent"?: (event: CustomEvent<any>) => void;
+        "socketServer"?: string;
+        "username"?: string;
+    }
+    interface ChatConversation {
+        "chatmessages"?: Message[];
+    }
+    interface ChatMessage {
+        "onMessageEvent"?: (event: CustomEvent<any>) => void;
     }
     interface IntrinsicElements {
         "chat-client": ChatClient;
+        "chat-conversation": ChatConversation;
+        "chat-message": ChatMessage;
     }
 }
 export { LocalJSX as JSX };
@@ -32,6 +68,8 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "chat-client": LocalJSX.ChatClient & JSXBase.HTMLAttributes<HTMLChatClientElement>;
+            "chat-conversation": LocalJSX.ChatConversation & JSXBase.HTMLAttributes<HTMLChatConversationElement>;
+            "chat-message": LocalJSX.ChatMessage & JSXBase.HTMLAttributes<HTMLChatMessageElement>;
         }
     }
 }

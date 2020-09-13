@@ -1,0 +1,22 @@
+# simple-socketio-load-test.yaml
+config:
+  target: "wss://r1texw3wgg.execute-api.eu-west-1.amazonaws.com/dev"
+  phases:
+    - duration: 100
+      arrivalRate: 5
+  ws:
+    # Ignore SSL certificate errors
+    # - useful in *development* with self-signed certs
+    rejectUnauthorized: false      
+scenarios:
+    - name: My WebSocket test
+      engine: "ws" # Enable the Socket.io engine
+      flow:
+        - loop:
+            - send:
+                action: "sendMessage"
+                name: "testuser"
+                channelId: "General"
+                content: "hello world!"
+            - think: 1
+          count: 20

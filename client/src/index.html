@@ -29,55 +29,42 @@
     <div id="chat-container"></div>
 
     <script>
-      function loadJSON(callback) {
-        var xobj = new XMLHttpRequest();
-        xobj.overrideMimeType('application/json');
-        xobj.open('GET', 'stack.json', true); // Replace 'my_data' with the path to your file
-        xobj.onreadystatechange = function() {
-          if (xobj.readyState == 4 && xobj.status == '200') {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            callback(xobj.responseText);
-          }
-        };
-        xobj.send(null);
-      }
-      document.addEventListener('DOMContentLoaded', function() {
-        loadJSON(function(response) {
-
-          // response from stack json
-          var stack = JSON.parse(response);
-
-          // make a socket connection
-          const socket = new WebSocket(stack.ServiceEndpointWebsocket);
-          socket.onopen = function(event) {
-            console.log(`Connection established`);
-          };
-          socket.onclose = function(event) {
-            console.log(`Connection closed`);
-          };
-          socket.onmessage = function(e) {
-            var message = JSON.parse(e.data);
-            console.log(message);
-            if (message.event === 'channel_message') {
-              $events.appendChild(newItem(message.name + ' says: ' + message.content));
-            }
-
-            if (message.event === 'subscriber_sub') {
-              console.log(message);
-            }
-
-            if (message.event === 'subscriber_unsub') {
-              console.log(message);
+      const username = prompt('Please enter your name', '');
+      if (username) {
+        function loadJSON(callback) {
+          var xobj = new XMLHttpRequest();
+          xobj.overrideMimeType('application/json');
+          xobj.open('GET', 'stack.json', true); // Replace 'my_data' with the path to your file
+          xobj.onreadystatechange = function() {
+            if (xobj.readyState == 4 && xobj.status == '200') {
+              // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+              callback(xobj.responseText);
             }
           };
-
+          xobj.send(null);
+        }
+        function init(webSocketServer) {
           // attach out chat client to the document
           var chatClient = document.createElement('chat-client');
-          chatClient.socketServer = stack.ServiceEndpoint;
-          chatClient.username = 'JohnDoe';
+          chatClient.init({ username: username, server: webSocketServer, channel: 'General' });
+
           document.getElementById('chat-container').appendChild(chatClient);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+          if (location.hostname === 'localhost') {
+            var stack = {
+              ServiceEndpointWebsocket: 'wss://r1texw3wgg.execute-api.eu-west-1.amazonaws.com/dev',
+            };
+            init(stack.ServiceEndpointWebsocket);
+          } else {
+            loadJSON(function(response) {
+              // response from stack json
+              var stack = JSON.parse(response);
+              init(stack.ServiceEndpointWebsocket);
+            });
+          }
         });
-      });
+      }
     </script>
   </body>
 </html>

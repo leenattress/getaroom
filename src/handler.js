@@ -5,7 +5,7 @@ const sanitize = require("sanitize-html");
 const wsClient = new ws.Client();
 
 const success = {
-  statusCode: 200
+  statusCode: 200,
 };
 
 async function connectionManager(event, context) {
@@ -20,8 +20,8 @@ async function connectionManager(event, context) {
         ...event,
         body: JSON.stringify({
           action: "subscribe",
-          channelId: "General"
-        })
+          channelId: "General",
+        }),
       },
       context
     );
@@ -29,16 +29,16 @@ async function connectionManager(event, context) {
     return success;
   } else if (event.requestContext.eventType === "DISCONNECT") {
     // unsub all channels connection was in
-    const subscriptions =await db.fetchConnectionSubscriptions(event);
-    const unsubscribes = subscriptions.map(async subscription =>
+    const subscriptions = await db.fetchConnectionSubscriptions(event);
+    const unsubscribes = subscriptions.map(async (subscription) =>
       // just simulate / reuse the same as if they issued the request via the protocol
       unsubscribeChannel(
         {
           ...event,
           body: JSON.stringify({
             action: "unsubscribe",
-            channelId: db.parseEntityId(subscription[db.Channel.Primary.Key])
-          })
+            channelId: db.parseEntityId(subscription[db.Channel.Primary.Key]),
+          }),
         },
         context
       )
@@ -52,7 +52,7 @@ async function connectionManager(event, context) {
 async function defaultMessage(event, context) {
   await wsClient.send(event, {
     event: "error",
-    message: "invalid action type"
+    message: "invalid action type",
   });
 
   return success;
@@ -71,7 +71,7 @@ async function sendMessage(event, context) {
     .replace(/\+s/g, "-");
   const content = sanitize(body.content, {
     allowedTags: ["ul", "ol", "b", "i", "em", "strike", "pre", "strong", "li"],
-    allowedAttributes: {}
+    allowedAttributes: {},
   });
 
   // save message in database for later
@@ -82,12 +82,12 @@ async function sendMessage(event, context) {
       [db.Message.Primary.Range]: messageId,
       ConnectionId: `${event.requestContext.connectionId}`,
       Name: name,
-      Content: content
-    }
+      Content: content,
+    },
   }).promise();
 
   const subscribers = await db.fetchChannelSubscriptions(body.channelId);
-  const results = subscribers.map(async subscriber => {
+  const results = subscribers.map(async (subscriber) => {
     const subscriberId = db.parseEntityId(
       subscriber[db.Channel.Connections.Range]
     );
@@ -95,7 +95,7 @@ async function sendMessage(event, context) {
       event: "channel_message",
       channelId: body.channelId,
       name,
-      content
+      content,
     });
   });
 
@@ -109,7 +109,7 @@ async function broadcast(event, context) {
   // disconnections, messages, etc
   // get all connections for channel of interest
   // broadcast the news
-  const results = event.Records.map(async record => {
+  const results = event.Records.map(async (record) => {
     switch (record.dynamodb.Keys[db.Primary.Key].S.split("|")[0]) {
       // Connection entities
       case db.Connection.Entity:
@@ -137,7 +137,7 @@ async function broadcast(event, context) {
               record.dynamodb.Keys[db.Primary.Key].S
             );
             const subscribers = await db.fetchChannelSubscriptions(channelId);
-            const results = subscribers.map(async subscriber => {
+            const results = subscribers.map(async (subscriber) => {
               const subscriberId = db.parseEntityId(
                 subscriber[db.Channel.Connections.Range]
               );
@@ -150,7 +150,7 @@ async function broadcast(event, context) {
                   // sender of message "from id"
                   subscriberId: db.parseEntityId(
                     record.dynamodb.Keys[db.Primary.Range].S
-                  )
+                  ),
                 }
               );
             });
@@ -215,10 +215,10 @@ async function subscribeChannel(event, context) {
     TableName: db.Table,
     Item: {
       [db.Channel.Connections.Key]: `${db.Channel.Prefix}${channelId}`,
-      [db.Channel.Connections.Range]: `${db.Connection.Prefix}${
-        db.parseEntityId(event)
-      }`
-    }
+      [db.Channel.Connections.Range]: `${
+        db.Connection.Prefix
+      }${db.parseEntityId(event)}`,
+    },
   }).promise();
 
   // Instead of broadcasting here we listen to the dynamodb stream
@@ -234,10 +234,10 @@ async function unsubscribeChannel(event, context) {
     TableName: db.Table,
     Key: {
       [db.Channel.Connections.Key]: `${db.Channel.Prefix}${channelId}`,
-      [db.Channel.Connections.Range]: `${db.Connection.Prefix}${
-        db.parseEntityId(event)
-      }`
-    }
+      [db.Channel.Connections.Range]: `${
+        db.Connection.Prefix
+      }${db.parseEntityId(event)}`,
+    },
   }).promise();
   return success;
 }
@@ -249,5 +249,5 @@ module.exports = {
   broadcast,
   subscribeChannel,
   unsubscribeChannel,
-  channelManager
+  channelManager,
 };
